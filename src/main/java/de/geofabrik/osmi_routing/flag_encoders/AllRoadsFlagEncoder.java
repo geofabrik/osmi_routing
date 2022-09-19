@@ -146,7 +146,9 @@ public class AllRoadsFlagEncoder extends AbstractFlagEncoder {
                 return RoadClass.PLATFORM;
             } else if (public_transport != null && public_transport.equals("platform")) {
                 return RoadClass.PLATFORM;
-            } else if (route != null && route.equals("ferry"));
+            } else if (route != null && route.equals("ferry")) {
+                return RoadClass.FERRY;
+            };
             return RoadClass.UNDEFINED;
         }
     }
