@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-mvn compile assembly:single -U
+mvn install -U
