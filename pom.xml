@@ -45,29 +45,17 @@
     <dependency>
       <groupId>com.graphhopper</groupId>
       <artifactId>graphhopper-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0-osm-reader-callbacks</version>
     </dependency>
     <dependency>
       <groupId>com.graphhopper</groupId>
       <artifactId>graphhopper-core</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <!-- dependency of graphhopper-core -->
-    <dependency>
-      <groupId>com.carrotsearch</groupId>
-      <artifactId>hppc</artifactId>
-      <version>0.8.1</version>
+      <version>1.0-osm-reader-callbacks</version>
     </dependency>
     <dependency>
       <groupId>com.graphhopper</groupId>
       <artifactId>graphhopper-reader-osm</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
-    <!-- dependency of graphhopper-reader-osm -->
-    <dependency>
-      <groupId>org.openstreetmap.osmosis</groupId>
-      <artifactId>osmosis-osm-binary</artifactId>
-      <version>0.47.3</version>
+      <version>1.0-osm-reader-callbacks</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -97,9 +85,10 @@
   </build>
   <repositories>
   <repository>
-    <id>forked-graphhopper.local</id>
-    <name>forked-graphhopper</name>
-    <url>file:${project.basedir}/maven_repository</url>
+    <id>maven.geofabrik.de</id>
+    <url>https://maven.geofabrik.de/</url>
+    <releases><enabled>true</enabled></releases>
+    <snapshots><enabled>true</enabled></snapshots>
   </repository>
   </repositories>
 </project>
