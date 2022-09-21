@@ -37,8 +37,8 @@ import com.graphhopper.storage.GraphHopperStorage;
 import com.graphhopper.storage.NodeAccess;
 import com.graphhopper.storage.index.LocationIndex;
 import com.graphhopper.storage.index.LocationIndexTree;
-import com.graphhopper.storage.index.QueryResult;
-import com.graphhopper.storage.index.QueryResult.Position;
+import com.graphhopper.storage.index.Snap;
+import com.graphhopper.storage.index.Snap.Position;
 import com.graphhopper.util.AngleCalc;
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistanceCalcEuclidean;
@@ -119,8 +119,8 @@ public class UnconnectedFinder implements Runnable {
         return Math.min(result, 360 - result);
     }
 
-    private double getAngleDiff(EdgeIteratorState openEnd, QueryResult matched) throws IllegalStateException {
-        QueryResult.Position matchType = matched.getSnappedPosition();
+    private double getAngleDiff(EdgeIteratorState openEnd, Snap matched) throws IllegalStateException {
+        Snap.Position matchType = matched.getSnappedPosition();
         NodeAccess nodeAccess = storage.getNodeAccess();
         // Get the two locations of the matched edge to calculate its orientation.
         double matchedLat1 = Double.MAX_VALUE;
@@ -175,7 +175,7 @@ public class UnconnectedFinder implements Runnable {
         double openEndLat2 = pointsAll.getLat(0);
         double openEndLon2 = pointsAll.getLon(0);
         double orientationOpenEnd = angleCalc.calcOrientation(openEndLat1, openEndLon1, openEndLat2, openEndLon2, false);
-        if (matchType != QueryResult.Position.PILLAR) {
+        if (matchType != Snap.Position.PILLAR) {
             return normaliseAngle(Math.toDegrees(orientationMatched12), Math.toDegrees(orientationOpenEnd)/*, matchType*/);
         } else {
             return 0.5 * (normaliseAngle(Math.toDegrees(orientationMatched12), Math.toDegrees(orientationOpenEnd))
@@ -183,12 +183,12 @@ public class UnconnectedFinder implements Runnable {
         }
     }
 
-    private Double getDistanceOnGraph(int fromNodeId, QueryResult closestResult) {
-        if (closestResult.getSnappedPosition() == QueryResult.Position.TOWER) {
+    private Double getDistanceOnGraph(int fromNodeId, Snap closestResult) {
+        if (closestResult.getSnappedPosition() == Snap.Position.TOWER) {
             DijkstraWithLimits.Result result = dijkstra.route(fromNodeId, closestResult.getClosestNode());
             return result.distance;
         }
-        if (closestResult.getSnappedPosition() == QueryResult.Position.PILLAR) {
+        if (closestResult.getSnappedPosition() == Snap.Position.PILLAR) {
             DijkstraWithLimits.Result result = dijkstra.routeToPillar(fromNodeId, closestResult.getClosestEdge(), closestResult.getSnappedPoint());
             return result.distance;
         }
@@ -246,7 +246,7 @@ public class UnconnectedFinder implements Runnable {
      * For footways, paths and steps: The priority is reduced by 1 if the conditions above apply
      * (but larger thresholds) and the distances is larger than the length of the edge. 
      */
-    private int getImportanceDecrement(RoadClass roadClass, EdgeIteratorState openEnd, QueryResult queryResult) {
+    private int getImportanceDecrement(RoadClass roadClass, EdgeIteratorState openEnd, Snap queryResult) {
         if (roadClass != RoadClass.FOOTWAY && roadClass != RoadClass.PATH
                 && roadClass != RoadClass.SERVICE_PARKING_AISLE && roadClass != RoadClass.SERVICE_DRIVEWAY
                 && roadClass != RoadClass.STEPS) {
@@ -302,9 +302,6 @@ public class UnconnectedFinder implements Runnable {
 
     private void checkNode(int id) throws IOException, IllegalStateException {
         EdgeExplorer explorer = storage.createEdgeExplorer();
-        if (storage.isNodeRemoved(id)) {
-            return;
-        }
         long osmId;
         try {
             osmId = nodeInfoStore.getOsmId(id);
@@ -376,15 +373,15 @@ public class UnconnectedFinder implements Runnable {
             }
         }
         // fetch edge geometry
-        List<QueryResult> result = ((LocationIndexTree) index).findNClosest(fromPoints.getLat(0), fromPoints.getLon(0), EdgeFilter.ALL_EDGES, maxDistance);
+        List<Snap> result = ((LocationIndexTree) index).findNClosest(fromPoints.getLat(0), fromPoints.getLon(0), EdgeFilter.ALL_EDGES, maxDistance);
         // distance to closest accepted match
         double distanceClosest = Double.MAX_VALUE;
-        QueryResult closestResult = null;
+        Snap closestResult = null;
         // iterate over results
         boolean endLevelValid = encoder.isLevelValid(firstEdge);
         int endMinLevel = encoder.getLevel(firstEdge);
         int endMaxLevel = endMinLevel + encoder.getLevelDiff(firstEdge);
-        for (QueryResult r : result) {
+        for (Snap r : result) {
             EdgeIteratorState foundEdge = r.getClosestEdge();
             // Check if the matched edge is the only edge connected to our node.
             if (foundEdge.getEdge() == edgeIteratorStates.get(0).getEdge()) {

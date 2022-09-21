@@ -53,7 +53,7 @@ public class RemoveAndDumpSubnetworks extends PrepareRoutingSubnetworks {
     OsmIdStore edgeIdToWayId;
 
     public RemoveAndDumpSubnetworks(GraphHopperStorage ghStorage, List<PrepareJob> jobs, java.nio.file.Path path, OsmIdStore edgeIdToWayId) throws IOException {
-        super(ghStorage, jobs, false);
+        super(ghStorage, jobs);
         this.writers = new ArrayList<GeoJSONWriter>(jobs.size());
         for (PrepareJob j : jobs) {
             java.nio.file.Path destination = path.resolve("subnetworks_" + j.getName() + ".json");
@@ -91,15 +91,7 @@ public class RemoveAndDumpSubnetworks extends PrepareRoutingSubnetworks {
         for (currentWriter = 0; currentWriter < getPrepareJobs().size(); ++currentWriter) {
             PrepareJob job = getPrepareJobs().get(currentWriter);
             logger.info("--- vehicle: '" + job.getName() + "'");
-            removeSmallSubNetworks(job.getAccessEnc(), job.getTurnCostProvider());
-        }
-        markNodesRemovedIfUnreachable();
-
-        if (shouldOptimize) {
-            optimize();
-            logger.info("Finished finding and removing subnetworks for " + getPrepareJobs().size() + " vehicles, took: " + sw.stop().getSeconds() + "s, " + Helper.getMemInfo());
-        } else {
-            logger.info("Skipping optimization of subnetworks");
+            removeSmallSubNetworks(job);
         }
     }
 

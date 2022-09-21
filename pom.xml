@@ -13,6 +13,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <graphhopper.version>2.0-osm-reader-callbacks</graphhopper.version>
   </properties>
 
   <dependencies>
@@ -45,17 +46,17 @@
     <dependency>
       <groupId>com.graphhopper</groupId>
       <artifactId>graphhopper-api</artifactId>
-      <version>1.0-osm-reader-callbacks</version>
+      <version>${graphhopper.version}</version>
     </dependency>
     <dependency>
       <groupId>com.graphhopper</groupId>
       <artifactId>graphhopper-core</artifactId>
-      <version>1.0-osm-reader-callbacks</version>
+      <version>${graphhopper.version}</version>
     </dependency>
     <dependency>
       <groupId>com.graphhopper</groupId>
       <artifactId>graphhopper-reader-osm</artifactId>
-      <version>1.0-osm-reader-callbacks</version>
+      <version>${graphhopper.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

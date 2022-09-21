@@ -84,10 +84,10 @@ public class DijkstraWithLimitTest {
         PointList pointList = makePointList(p);
         // use simple DistanceCalc2D which assumes cartesian 2D coordinates
         double distance = new DijkstraWithLimits(graph, 100, 1, new DistancePlaneProjection()).distanceOnEdge(pointList, p);
-        assertEquals(0.19171417, distance, 0.000000001);
+        assertEquals(20979, distance, 1.0);
         // reverse point list
         pointList.reverse();
         distance = new DijkstraWithLimits(graph, 100, 1, new DistancePlaneProjection()).distanceOnEdge(pointList, p);
-        assertEquals(0.200997512, distance, 0.000000001);
+        assertEquals(21205, distance, 1.0);
     }
 }
